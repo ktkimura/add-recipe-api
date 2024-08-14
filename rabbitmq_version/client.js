@@ -37,31 +37,31 @@ function sendRecipeLink(){
 function receiveRecipeDetails(){
     var amqp = require('amqplib/callback_api');
 
-amqp.connect('amqp://localhost', function(error0, connection) {
-    if (error0) {
-        throw error0;
-    }
-    connection.createChannel(function(error1, channel) {
-        if (error1) {
-            throw error1;
+    amqp.connect('amqp://localhost', function(error0, connection) {
+        if (error0) {
+            throw error0;
         }
+        connection.createChannel(function(error1, channel) {
+            if (error1) {
+                throw error1;
+            }
 
-        var queue = 'recipeDetails';
+            var queue = 'recipeDetails';
 
-        channel.assertQueue(queue, {
-            durable: false
-        });
+            channel.assertQueue(queue, {
+                durable: false
+            });
 
-        console.log(" [client.js] Waiting for messages in %s. To exit press CTRL+C", queue);
+            console.log(" [client.js] Waiting for messages in %s. To exit press CTRL+C", queue);
 
-        channel.consume(queue, function(msg) {
-            // note: ingredients and instructions will be passed in as arrays
-            console.log(" [client.js] Received %s", msg.content.toString());
-        }, {
-            noAck: true
+            channel.consume(queue, function(msg) {
+                // note: ingredients and instructions will be passed in as arrays
+                console.log(" [client.js] Received %s", msg.content.toString());
+            }, {
+                noAck: true
+            });
         });
     });
-});
 };
 
 sendRecipeLink();
